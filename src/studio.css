@@ -245,3 +245,5 @@ button:focus-visible, a:focus-visible { outline: 3px solid #135e9c; outline-offs
 
 .form-note .form-preview { background: #243e56; }
 .bottom-cta > div > p:last-child { color: var(--signal-ink-muted); }
+
+.app-topnav :is(a, button):focus-visible { outline-color: var(--signal-sky); }

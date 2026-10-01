@@ -166,9 +166,14 @@ test("mobile navigation opens with keyboard and follows its selected destination
     };
     const foreground = luminance(getComputedStyle(el).color);
     const background = luminance(getComputedStyle(el.closest("nav")!).backgroundColor);
-    return (Math.max(foreground, background) + .05) / (Math.min(foreground, background) + .05);
+    const outline = luminance(getComputedStyle(el.closest("nav")!.querySelector('button[aria-label="Toggle menu"]')!).outlineColor);
+    return {
+      text: (Math.max(foreground, background) + .05) / (Math.min(foreground, background) + .05),
+      focus: (Math.max(outline, background) + .05) / (Math.min(outline, background) + .05),
+    };
   });
-  expect(contrast).toBeGreaterThanOrEqual(4.5);
+  expect(contrast.text).toBeGreaterThanOrEqual(4.5);
+  expect(contrast.focus).toBeGreaterThanOrEqual(3);
   await example.click();
   await expect(page).toHaveURL(/\/demo$/);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
