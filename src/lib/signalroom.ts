@@ -21,3 +21,10 @@ export function metrics(variants: Variant[], responses: Feedback[]) {
 export function evidencePrompt(experiment: Experiment, responses: Feedback[]) {
   return JSON.stringify({ audience: experiment.audience, question: experiment.question, title: experiment.title, responseCount: responses.length, variants: metrics(experiment.variants, responses), feedback: responses.map(({variantId, clarityScore, reason}) => ({variantId, clarityScore, reason})) })
 }
+
+export function normalizeAssetKey(key: string, appId: string): string | null {
+  if (!key) return ''
+  const prefix = `apps/${appId}/`
+  const relative = key.startsWith(prefix) ? key.slice(prefix.length) : key
+  return /^creatives\/[a-zA-Z0-9-]+\.(png|jpeg|webp)$/.test(relative) ? relative : null
+}

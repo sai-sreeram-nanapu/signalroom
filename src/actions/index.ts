@@ -1,7 +1,7 @@
 import { createDeepSpaceAI, DEEPSPACE_AI_DEFAULTS, type ActionHandler, type ActionTools } from 'deepspace/worker'
 import { generateText, Output } from 'ai'
 import type { Env } from '../../worker'
-import { experimentInput, responseInput, evidencePrompt, synthesisOutput, type Experiment, type Feedback } from '../lib/signalroom'
+import { experimentInput, responseInput, evidencePrompt, synthesisOutput, normalizeAssetKey, type Experiment, type Feedback } from '../lib/signalroom'
 
 const fail = (error: string) => ({ success: false as const, error })
 async function loadExperiment(tools: ActionTools, id: unknown) {
@@ -24,11 +24,13 @@ export const actions: Record<string, ActionHandler<Env>> = {
     }
     return tools.remove('experiments', record.recordId)
   },
-  saveExperiment: async ({ params, userId, tools }) => {
+  saveExperiment: async ({ params, userId, tools, env }) => {
     const parsed = experimentInput.safeParse(params)
     if (!parsed.success) return fail(parsed.error.issues[0].message)
     const data = parsed.data
-    if (data.assetKey && (!data.assetKey.startsWith('creatives/') || data.assetKey.includes('..'))) return fail('Invalid creative key')
+    const assetKey = normalizeAssetKey(data.assetKey, env.DEEPSPACE_APP_ID)
+    if (assetKey === null) return fail('Invalid creative key')
+    data.assetKey = assetKey
     if (params.experimentId) {
       const record = await loadExperiment(tools, params.experimentId)
       if (!record || record.data.creatorId !== userId) return fail('Experiment not found or access denied')
