@@ -4,8 +4,8 @@ import { demoExperiment, demoFeedback } from './demo'
 describe('evidence and validation', () => {
   it('accepts real app-prefixed R2 keys but rejects cross-app and traversal keys', () => {
     const key = 'creatives/cdfd5a6c-60b3-40ad-81c8-a1cc871e30f0.png'
-    expect(normalizeAssetKey(key, 'app_current')).toBe(key)
-    expect(normalizeAssetKey(`apps/app_current/${key}`, 'app_current')).toBe(key)
+    expect(normalizeAssetKey(key, 'app_current')).toBe(`apps/app_current/${key}`)
+    expect(normalizeAssetKey(`apps/app_current/${key}`, 'app_current')).toBe(`apps/app_current/${key}`)
     expect(normalizeAssetKey(`apps/app_other/${key}`, 'app_current')).toBeNull()
     expect(normalizeAssetKey('creatives/../private.png', 'app_current')).toBeNull()
     expect(normalizeAssetKey('', 'app_current')).toBe('')

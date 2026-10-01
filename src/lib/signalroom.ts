@@ -26,5 +26,5 @@ export function normalizeAssetKey(key: string, appId: string): string | null {
   if (!key) return ''
   const prefix = `apps/${appId}/`
   const relative = key.startsWith(prefix) ? key.slice(prefix.length) : key
-  return /^creatives\/[a-zA-Z0-9-]+\.(png|jpeg|webp)$/.test(relative) ? relative : null
+  return /^creatives\/[a-zA-Z0-9-]+\.(png|jpeg|webp)$/.test(relative) ? `${prefix}${relative}` : null
 }
