@@ -63,8 +63,7 @@ export default function AppLayout() {
  * While the initial session check is in flight, renders a fixed full-viewport
  * panel in the theme background — visually identical to the pre-JS page
  * (index.html primes <html> with the same color), so a cold load shows a
- * steady theme-colored screen until the shell appears. No spinner text: the
- * check is one round-trip, and in-flow placeholders read as a layout jump.
+ * steady theme-colored screen until the shell appears. A lightweight connection state explains the wait during a cold session check.
  */
 function AuthBoot({ children }: { children: ReactNode }) {
   const { isLoaded } = useAuthStatus();
@@ -75,7 +74,16 @@ function AuthBoot({ children }: { children: ReactNode }) {
   const { error, warning } = useToast();
 
   if (!isLoaded) {
-    return <div aria-busy="true" className="fixed inset-0 bg-background" />;
+    return (
+      <div aria-busy="true" className="auth-connecting">
+        <span className="brand-icon">
+          <Radio size={24} aria-hidden />
+        </span>
+        <strong>SignalRoom</strong>
+        <p role="status">Connecting to your workspace…</p>
+        <span className="connection-line" />
+      </div>
+    );
   }
 
   return (

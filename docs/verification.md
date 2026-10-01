@@ -31,3 +31,9 @@ UI redesign verification, October 1, 2026:
 - Search, draft/published filters, no-match state and filter reset verified against real test records. Existing two-user creation/publication/feedback/closure tests remain green.
 - TypeScript, lint, five unit tests, fifteen browser/API tests and production build passed. Screenshots captured under the ignored .deepspace/screenshots directory and visually inspected. Fixed a missing mobile headline space during that review.
 - These are focused accessibility and layout checks, not a comprehensive WCAG certification. Viewport resizing through the in-app browser did not apply; the committed Playwright test supplied the verified breakpoint checks and screenshots.
+
+Webflow reference refinement:
+
+- Added a lightweight CSS 3D marketing scene with message cards, a dimensional brand cube, a reviewer reaction and an insight card. Applied depth to the app preview and workflow icons; editing and reviewing controls retain ordinary layouts.
+- Re-ran all fifteen real-service browser/API tests successfully, including breakpoint and reduced-motion checks. Inspected desktop and small-phone screenshots of the 3D composition.
+- The first post-redesign production check reached a blank initial dynamic-page state. A subsequent fresh check passed with normal asset/session responses and verified image persistence and two-user realtime feedback. Added a visible auth connection state so the initial wait is explained. The scratch production check now allows 15 seconds for initial rendering.

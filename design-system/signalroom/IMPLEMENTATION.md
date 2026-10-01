@@ -16,3 +16,13 @@ Read the upstream skill, generated the recommendations in MASTER.md, and queried
 - Shared spacing, semantic tokens, visible focus, 44px principal controls, reflow, reduced-motion support. No auto-rotating content or decorative motion library.
 
 No API, authorization, collection schema, publication semantics, billing or AI model changes are part of this redesign.
+
+## Webflow 3D reference refinement
+
+Reference supplied by the user: https://webflow.com/blog/3d-design-website
+
+Applied layered planes, lighting and a product narrative to the marketing hero. The CSS perspective illustration shows two messages, a reviewer reaction and a next move. The Radio brand icon becomes a dimensional cube. The product preview and workflow icons gain subtle thickness and elevation.
+
+The scene is decorative and hidden from assistive technology; complete product explanations and controls remain ordinary DOM content. There is no WebGL dependency, 3D asset download, continuous animation, scroll interception, or pointer tracking. Hover changes only the decorative cards' transforms. Reduced motion freezes the interaction; touch users receive the static composition. Mobile clipping is confined to decorative planes and preserves horizontal document reflow.
+
+Cold authentication checks now have a visible branded connection state instead of a blank screen.

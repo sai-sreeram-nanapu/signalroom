@@ -12,6 +12,7 @@ import {
 import { Seo } from "../components/Seo";
 import { seo } from "../seo";
 import { demoExperiment, demoFeedback } from "../lib/demo";
+import { SignalSculpture } from "../components/SignalSculpture";
 import { ResultsPanel } from "../components/experiments/ResultsPanel";
 
 export default function Landing() {
@@ -39,39 +40,41 @@ export default function Landing() {
         </header>
         <main id="main-content" className="landing-main">
           <section className="hero">
-            <div className="hero-copy">
-              <p className="hero-badge">
-                <span className="live-dot" /> A little feedback. A better next
-                move.
-              </p>
-              <h1>
-                Find the message
-                <br /> that <span>makes people care.</span>
-              </h1>
-              <p className="hero-description">
-                Put your ideas in front of real people. Compare messages,
-                understand their reactions, and turn feedback into your next
-                move.
-              </p>
-              <div className="cta-row">
-                <Link className="button" to="/experiments/new">
-                  Create an experiment <ArrowRight size={18} aria-hidden />
-                </Link>
-                <Link className="button button-secondary" to="/demo">
-                  Explore the example <ArrowUpRight size={18} aria-hidden />
-                </Link>
+            <div className="hero-top">
+              <div className="hero-copy">
+                <p className="hero-badge">
+                  <span className="live-dot" /> A little feedback. A better next
+                  move.
+                </p>
+                <h1>
+                  Find the message that <span>makes people care.</span>
+                </h1>
+                <p className="hero-description">
+                  Put your ideas in front of real people. Compare messages,
+                  understand their reactions, and turn feedback into your next
+                  move.
+                </p>
+                <div className="cta-row">
+                  <Link className="button" to="/experiments/new">
+                    Create an experiment <ArrowRight size={18} aria-hidden />
+                  </Link>
+                  <Link className="button button-secondary" to="/demo">
+                    Explore the example <ArrowUpRight size={18} aria-hidden />
+                  </Link>
+                </div>
+                <div className="hero-benefits">
+                  <span>
+                    <Check size={15} aria-hidden /> 2–4 message variants
+                  </span>
+                  <span>
+                    <Check size={15} aria-hidden /> Feedback in realtime
+                  </span>
+                  <span>
+                    <Check size={15} aria-hidden /> AI that follows the evidence
+                  </span>
+                </div>
               </div>
-              <div className="hero-benefits">
-                <span>
-                  <Check size={15} aria-hidden /> 2–4 message variants
-                </span>
-                <span>
-                  <Check size={15} aria-hidden /> Feedback in realtime
-                </span>
-                <span>
-                  <Check size={15} aria-hidden /> AI that follows the evidence
-                </span>
-              </div>
+              <SignalSculpture />
             </div>
             <div className="product-preview">
               <div className="preview-toolbar">
