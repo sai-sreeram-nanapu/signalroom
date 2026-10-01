@@ -15,14 +15,15 @@
  * their own layout without inheriting it.
  */
 
-import { Suspense, type ReactNode } from 'react'
-import { Outlet } from 'react-router-dom'
-import { DeepSpaceAuthProvider, useAuthStatus } from 'deepspace'
-import { RecordProvider, RecordScope } from 'deepspace'
-import Navigation from '../../components/Navigation'
-import { useToast } from '@/components/ui'
-import { APP_NAME, SCOPE_ID } from '../../constants'
-import { schemas } from '../../schemas'
+import { Suspense, type ReactNode } from "react";
+import { Outlet, Link, useLocation } from "react-router-dom";
+import { DeepSpaceAuthProvider, useAuthStatus } from "deepspace";
+import { RecordProvider, RecordScope } from "deepspace";
+import { FlaskConical, Plus, ArrowUpRight, Radio } from "lucide-react";
+import Navigation from "../../components/Navigation";
+import { useToast } from "@/components/ui";
+import { APP_NAME, SCOPE_ID } from "../../constants";
+import { schemas } from "../../schemas";
 
 export default function AppLayout() {
   return (
@@ -31,17 +32,29 @@ export default function AppLayout() {
           when <Seo> unmounts, so every route without <Seo> sets its own. */}
       <title>{APP_NAME}</title>
       <AuthBoot>
-        <div className="flex h-screen flex-col bg-background overflow-hidden">
+        <div className="flex h-dvh flex-col bg-background overflow-hidden">
+          <a className="skip-link" href="#main-content">
+            Skip to content
+          </a>
           <Navigation />
-          <main className="flex-1 overflow-y-auto min-h-0">
-            <Suspense fallback={<div className="flex items-center justify-center h-full text-muted-foreground">Loading...</div>}>
-              <Outlet />
-            </Suspense>
-          </main>
+          <div className="app-frame">
+            <WorkspaceSidebar />
+            <main id="main-content" className="app-scroll">
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center h-full text-muted-foreground">
+                    Loading...
+                  </div>
+                }
+              >
+                <Outlet />
+              </Suspense>
+            </main>
+          </div>
         </div>
       </AuthBoot>
     </DeepSpaceAuthProvider>
-  )
+  );
 }
 
 /**
@@ -54,27 +67,64 @@ export default function AppLayout() {
  * check is one round-trip, and in-flow placeholders read as a layout jump.
  */
 function AuthBoot({ children }: { children: ReactNode }) {
-  const { isLoaded } = useAuthStatus()
+  const { isLoaded } = useAuthStatus();
   // Record writes (`create`/`put`/`remove`) are fire-and-forget — they resolve
   // before the server answers, so a denied or invalid write only surfaces
   // through onWriteError. Route rejections to toasts so they're never a
   // silent no-op. Keep this wiring when customizing the layout.
-  const { error, warning } = useToast()
+  const { error, warning } = useToast();
 
   if (!isLoaded) {
-    return <div aria-busy="true" className="fixed inset-0 bg-background" />
+    return <div aria-busy="true" className="fixed inset-0 bg-background" />;
   }
 
   return (
     <RecordProvider
       allowAnonymous
       onWriteError={(e) =>
-        e.kind === 'permission' ? warning(e.title, e.detail) : error(e.title, e.detail)
+        e.kind === "permission"
+          ? warning(e.title, e.detail)
+          : error(e.title, e.detail)
       }
     >
       <RecordScope roomId={SCOPE_ID} schemas={schemas}>
         {children}
       </RecordScope>
     </RecordProvider>
-  )
+  );
+}
+
+function WorkspaceSidebar() {
+  const { pathname } = useLocation();
+  return (
+    <aside className="app-sidebar">
+      <p className="eyebrow">RESEARCH WORKSPACE</p>
+      <nav aria-label="Workspace navigation">
+        <Link
+          className={`sidebar-link ${pathname === "/home" || (pathname.includes("/experiments/") && !pathname.endsWith("/new")) ? "active" : ""}`}
+          to="/home"
+        >
+          <FlaskConical size={18} aria-hidden /> Experiments
+        </Link>
+        <Link
+          className={`sidebar-link ${pathname.endsWith("/new") ? "active" : ""}`}
+          to="/experiments/new"
+        >
+          <Plus size={18} aria-hidden /> New experiment
+        </Link>
+        <Link className="sidebar-link" to="/demo">
+          <ArrowUpRight size={18} aria-hidden /> Product example
+        </Link>
+      </nav>
+      <div className="sidebar-footer">
+        <Radio size={22} aria-hidden />
+        <p>
+          Small experiments.
+          <br />
+          Clearer decisions.
+        </p>
+        <p>Powered by DeepSpace</p>
+      </div>
+    </aside>
+  );
 }

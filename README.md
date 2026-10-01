@@ -6,6 +6,10 @@ SignalRoom helps builders and GTM teams compare messages with real people, colle
 
 [Interactive example](https://signalroom.app.space/demo) · [Live workspace](https://signalroom.app.space/home)
 
+## Design system
+
+The interface uses UI/UX Pro Max guidance adapted for a research workspace: self-hosted Plus Jakarta Sans, semantic blue/slate/white tokens, responsive navigation, selectable message cards, live results, and structured AI insights. Design decisions are recorded in `design-system/signalroom/IMPLEMENTATION.md`. Browser checks cover public pages at 375, 768, 1024, and 1440px, plus the editor/reviewer/results at 375 and 1440px. Workspace search and lifecycle filters operate on real records.
+
 ## DeepSpace primitives
 
 - **Auth** identifies creators and reviewers. Creator routes are gated; published links remain readable while signed out.

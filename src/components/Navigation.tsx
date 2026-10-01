@@ -8,14 +8,21 @@
  * email is the credential the session was opened with.
  */
 
-import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { AuthOverlay, useAuthProfileReady, signOut } from 'deepspace'
-import { ChevronDown, LogOut, Menu, X, Radio } from 'lucide-react'
-import { APP_NAME } from '../constants'
-import type { Role } from '../constants'
-import { nav } from '../nav'
-import { cn } from '../lib/utils'
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { AuthOverlay, useAuthProfileReady, signOut } from "deepspace";
+import {
+  ChevronDown,
+  LogOut,
+  Menu,
+  X,
+  Radio,
+  FlaskConical,
+} from "lucide-react";
+import { APP_NAME } from "../constants";
+import type { Role } from "../constants";
+import { nav } from "../nav";
+import { cn } from "../lib/utils";
 import {
   Avatar,
   AvatarFallback,
@@ -26,56 +33,66 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from './ui'
+} from "./ui";
 
 export default function Navigation() {
-  const { isLoaded, isSignedIn, user, userLoading } = useAuthProfileReady({ requireUser: true })
-  const location = useLocation()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [showAuthModal, setShowAuthModal] = useState(false)
+  const { isLoaded, isSignedIn, user, userLoading } = useAuthProfileReady({
+    requireUser: true,
+  });
+  const location = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
-  const profileReady = !isSignedIn || (!userLoading && !!user)
-  const userRole = (user?.role ?? 'anonymous') as Role | 'anonymous'
+  const profileReady = !isSignedIn || (!userLoading && !!user);
+  const userRole = (user?.role ?? "anonymous") as Role | "anonymous";
 
   // Close the mobile menu when navigating
   useEffect(() => {
-    setMobileMenuOpen(false)
-  }, [location.pathname])
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   const visibleNav = nav.filter((item) => {
-    if (item.devOnly && !import.meta.env.DEV) return false
-    if (!item.roles) return true
-    if (!profileReady) return false
-    if (userRole === 'admin') return true
-    return item.roles.includes(userRole as Role)
-  })
+    if (item.devOnly && !import.meta.env.DEV) return false;
+    if (!item.roles) return true;
+    if (!profileReady) return false;
+    if (userRole === "admin") return true;
+    return item.roles.includes(userRole as Role);
+  });
 
   const navLink = (item: (typeof nav)[number]) => {
-    const active = location.pathname.startsWith(item.path)
+    const active = location.pathname.startsWith(item.path);
     return (
       <Link
         key={item.path}
         to={item.path}
-        aria-current={active ? 'page' : undefined}
+        aria-current={active ? "page" : undefined}
         className={cn(
-          'px-3 py-1.5 text-sm',
-          active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
+          "px-3 py-1.5 text-sm",
+          active
+            ? "text-foreground"
+            : "text-muted-foreground hover:text-foreground",
         )}
       >
+        {item.path === "/home" && <FlaskConical size={16} aria-hidden />}
         {item.label}
       </Link>
-    )
-  }
+    );
+  };
 
   return (
     <>
-      <nav data-testid="app-navigation" className="border-b border-border bg-background">
+      <nav data-testid="app-navigation" className="app-topnav">
         <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4">
           <Link to="/home" className="wordmark">
-            <Radio size={22} />{APP_NAME}
+            <span className="brand-icon">
+              <Radio size={22} aria-hidden />
+            </span>
+            {APP_NAME}
           </Link>
 
-          <div className="hidden items-center md:flex">{visibleNav.map(navLink)}</div>
+          <div className="app-nav-links hidden items-center md:flex">
+            {visibleNav.map(navLink)}
+          </div>
 
           <div className="flex-1" />
 
@@ -95,9 +112,16 @@ export default function Navigation() {
                     className="group flex items-center gap-2 rounded-full border border-border bg-card/60 py-1 pl-1 pr-2.5 text-sm transition-colors hover:bg-card"
                   >
                     <Avatar className="h-6 w-6 ring-1 ring-inset ring-border">
-                      <AvatarImage src={user.imageUrl ?? undefined} referrerPolicy="no-referrer" />
+                      <AvatarImage
+                        src={user.imageUrl ?? undefined}
+                        referrerPolicy="no-referrer"
+                      />
                       <AvatarFallback className="text-[11px]">
-                        {(user.name?.[0] ?? user.email?.[0] ?? '?').toUpperCase()}
+                        {(
+                          user.name?.[0] ??
+                          user.email?.[0] ??
+                          "?"
+                        ).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     <span
@@ -116,7 +140,7 @@ export default function Navigation() {
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>
                   <div className="truncate font-medium text-foreground">
-                    {user.name || 'Signed in'}
+                    {user.name || "Signed in"}
                   </div>
                   <div
                     data-testid="nav-user-email"
@@ -148,7 +172,11 @@ export default function Navigation() {
             aria-label="Toggle menu"
             aria-expanded={mobileMenuOpen}
           >
-            {mobileMenuOpen ? <X className="h-4 w-4" aria-hidden /> : <Menu className="h-4 w-4" aria-hidden />}
+            {mobileMenuOpen ? (
+              <X className="h-4 w-4" aria-hidden />
+            ) : (
+              <Menu className="h-4 w-4" aria-hidden />
+            )}
           </button>
         </div>
 
@@ -161,5 +189,5 @@ export default function Navigation() {
 
       {showAuthModal && <AuthOverlay onClose={() => setShowAuthModal(false)} />}
     </>
-  )
+  );
 }

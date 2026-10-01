@@ -13,28 +13,36 @@
  * overlay). The sign-in overlay opens on demand and can be dismissed.
  */
 
-import { useState } from 'react'
-import { Link, Outlet } from 'react-router-dom'
-import { AuthGate, AuthOverlay } from 'deepspace'
-import { Button } from '@/components/ui'
+import { useState } from "react";
+import { Link, Outlet } from "react-router-dom";
+import { AuthGate, AuthOverlay } from "deepspace";
+import { FlaskConical } from "lucide-react";
+import { Button } from "@/components/ui";
 
 export default function ProtectedLayout() {
   return (
     <AuthGate fallback={<SignedOutPanel />}>
       <Outlet />
     </AuthGate>
-  )
+  );
 }
 
 function SignedOutPanel() {
-  const [showAuthModal, setShowAuthModal] = useState(false)
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-6 py-20">
-      <div className="w-full max-w-sm rounded-lg border border-border bg-card p-8 text-center">
-        <h1 className="text-lg font-semibold text-foreground">Sign in to continue</h1>
+      <div className="sign-in-card">
+        <span className="feature-icon">
+          <FlaskConical size={26} aria-hidden />
+        </span>
+        <p className="eyebrow">YOUR NEXT EXPERIMENT</p>
+        <h1 className="text-lg font-semibold text-foreground">
+          Sign in to continue
+        </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          This page is only available to signed-in users.
+          Sign in to turn your ideas into experiments, invite feedback, and keep
+          everything in one place.
         </p>
         <Button className="mt-6 w-full" onClick={() => setShowAuthModal(true)}>
           Sign in
@@ -49,5 +57,5 @@ function SignedOutPanel() {
 
       {showAuthModal && <AuthOverlay onClose={() => setShowAuthModal(false)} />}
     </div>
-  )
+  );
 }
