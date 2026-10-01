@@ -1,20 +1,21 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Radio, ArrowUpRight } from "lucide-react";
+import { Radio, ArrowUpRight, RotateCcw, CheckCircle2 } from "lucide-react";
 import { Button } from "../components/ui";
-import { demoExperiment, demoFeedback, demoSynthesis } from "../lib/demo";
+import { demoExperiment, demoFeedback, buildDemoSynthesis } from "../lib/demo";
 import { ResultsPanel } from "../components/experiments/ResultsPanel";
 import { SynthesisPanel } from "../components/experiments/SynthesisPanel";
 export default function Demo() {
   const [selected, setSelected] = useState("");
-  const [voted, setVoted] = useState(false);
+  const [vote, setVote] = useState("");
+  const voted = !!vote && vote === selected;
   const [analysis, setAnalysis] = useState(false);
-  const feedback = voted
+  const feedback = vote
     ? [
         ...demoFeedback,
         {
           experimentId: "sample",
-          variantId: selected,
+          variantId: vote,
           reviewerUserId: "you",
           clarityScore: 4,
           reason: "Your illustrative vote",
@@ -40,14 +41,18 @@ export default function Demo() {
           Interactive example · Invented feedback. Your choice stays in this
           page and is not saved.
         </p>
-        <div className="page-heading">
+        <div className="page-heading demo-heading">
           <div>
-            <p className="eyebrow">EXPERIMENT / EXAMPLE</p>
+            <p className="eyebrow">THE PLAYGROUND / 001</p>
             <h1>{demoExperiment.title}</h1>
             <p>{demoExperiment.audience}</p>
           </div>
+          <Button variant="outline" onClick={() => { setSelected(""); setVote(""); }} disabled={!selected && !vote}>
+            <RotateCcw size={16} aria-hidden /> Reset demo
+          </Button>
         </div>
-        <div className="experiment-grid">
+        <div className="demo-journey" aria-label="Demo steps"><span>01 <b>Compare messages</b></span><span>02 <b>Watch the signal</b></span><span>03 <b>Find your next move</b></span></div>
+        <div className="experiment-grid demo-flow">
           <section className="panel">
             <p className="eyebrow">THE QUESTION</p>
             <h2>{demoExperiment.question}</h2>
@@ -58,7 +63,7 @@ export default function Demo() {
                   className={`variant-option ${selected === v.id ? "selected" : ""}`}
                   onClick={() => {
                     setSelected(v.id);
-                    setVoted(false);
+
                   }}
                   aria-pressed={selected === v.id}
                 >
@@ -69,28 +74,33 @@ export default function Demo() {
             </div>
             <Button
               disabled={!selected || voted}
-              onClick={() => setVoted(true)}
+              onClick={() => setVote(selected)}
             >
-              {voted ? "Example vote counted" : "Try an example vote"}
+              {voted ? "Example vote counted" : vote ? "Update example vote" : "Try an example vote"}
             </Button>
+            <p className="caption demo-vote-status" role="status">{vote ? <><CheckCircle2 size={15} aria-hidden /> Your example vote is included. Choose another message to update it.</> : "Choose a message to see how one vote changes the signal."}</p>
           </section>
+          <div className="signal-column">
           <ResultsPanel
             variants={demoExperiment.variants}
             feedback={feedback}
           />
-        </div>
         <section className="panel analysis">
           <div className="section-heading">
             <div>
               <p className="eyebrow">MAKE SENSE OF THE SIGNAL</p>
               <h2>Evidence, then a next step.</h2>
             </div>
-            <Button variant="outline" onClick={() => setAnalysis(!analysis)}>
+            <Button variant="outline" aria-expanded={analysis} onClick={() => setAnalysis(!analysis)}>
               {analysis ? "Hide sample analysis" : "View sample analysis"}
             </Button>
           </div>
-          {analysis && <SynthesisPanel synthesis={demoSynthesis} />}
+          <div className={`analysis-reveal ${analysis ? "is-open" : ""}`} inert={!analysis} aria-hidden={!analysis}>
+            <div><SynthesisPanel synthesis={buildDemoSynthesis(feedback)} /></div>
+          </div>
         </section>
+          </div>
+        </div>
       </main>
     </>
   );

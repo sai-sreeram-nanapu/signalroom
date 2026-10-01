@@ -10,6 +10,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useAuth, useQuery } from "deepspace";
+import { AnimatedNumber } from "../../components/AnimatedNumber";
 import { demoExperiment } from "../../lib/demo";
 import type { Experiment } from "../../lib/signalroom";
 export default function Home() {
@@ -29,7 +30,7 @@ export default function Home() {
         .includes(search.toLowerCase()),
   );
   return (
-    <div className="workspace">
+    <div className="workspace studio-workspace">
       <div className="page-heading">
         <div>
           <p className="eyebrow">YOUR WORKSPACE</p>
@@ -63,7 +64,7 @@ export default function Home() {
               <span>{item.label}</span>
               <item.icon size={18} aria-hidden />
             </div>
-            <strong>{item.count}</strong>
+            <strong><AnimatedNumber value={item.count} /></strong>
             <p>
               {item.label === "Accepting feedback"
                 ? "Published and open for responses"
@@ -179,20 +180,16 @@ export default function Home() {
                   to={`/experiments/${r.recordId}`}
                   key={r.recordId}
                 >
-                  <div className="experiment-card-top">
-                    <span className="experiment-icon">
-                      <FlaskConical size={21} aria-hidden />
-                    </span>
-                    <span className={`status ${r.data.status}`}>
-                      {r.data.status}
-                    </span>
+                  <span className="experiment-icon"><FlaskConical size={21} aria-hidden /></span>
+                  <div className="experiment-record-copy">
+                    <h2>{r.data.title}</h2>
+                    <p>{r.data.audience}</p>
                   </div>
-                  <h2>{r.data.title}</h2>
-                  <p>{r.data.audience}</p>
-                  <div className="experiment-card-bottom">
+                  <div className="experiment-record-meta">
+                    <span className={`status ${r.data.status}`}>{r.data.status}</span>
                     <span>{r.data.variants.length} message variants</span>
-                    <ArrowUpRight size={19} aria-hidden />
                   </div>
+                  <ArrowUpRight className="experiment-record-arrow" size={20} aria-hidden />
                 </Link>
               ))}
             </div>

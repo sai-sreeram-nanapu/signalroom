@@ -97,7 +97,7 @@ test("landing explains SignalRoom and example is interactive", async ({
   await expect(page.getByTestId("response-count")).toHaveText("4 responses");
   await page.getByRole("button", { name: "View sample analysis" }).click();
   await expect(
-    page.getByText("These three invented responses illustrate the product.", {
+    page.getByText("These 4 illustrative responses include three invented reviewer notes and your example vote.", {
       exact: false,
     }),
   ).toBeVisible();

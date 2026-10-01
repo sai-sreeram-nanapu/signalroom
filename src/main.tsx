@@ -5,6 +5,7 @@ import { routes } from '@generouted/react-router/lazy'
 import { createBrowserRouter, RouterProvider } from 'react-router'
 import { installStaleChunkRecovery } from './stale-chunk-recovery'
 import './styles.css'
+import './studio.css'
 
 async function main() {
   const root = document.getElementById('root')!

@@ -109,7 +109,7 @@ export default function ExperimentPage() {
     );
   const feedback = responses.map((r) => r.data);
   return (
-    <main className="workspace">
+    <main className={`workspace experiment-workspace ${owner ? "creator-workspace" : "review-workspace"}`}>
       <Link
         className="caption"
         to="/home"
@@ -224,7 +224,7 @@ export default function ExperimentPage() {
         )}
       </div>
       {owner && (
-        <>
+        <div className="owner-evidence-grid">
           <section className="panel analysis">
             <div className="section-heading">
               <div>
@@ -300,7 +300,7 @@ export default function ExperimentPage() {
               ))
             )}
           </section>
-        </>
+        </div>
       )}
     </main>
   );

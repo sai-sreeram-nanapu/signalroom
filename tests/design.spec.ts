@@ -91,6 +91,8 @@ test("workspace search and lifecycle filters use real records; editor and review
       a.page.getByRole("heading", { name: "No matching experiments." }),
     ).toBeVisible();
     await a.page.getByRole("button", { name: "Clear filters" }).click();
+    await expect(a.page.locator(".experiment-item").first()).toBeVisible();
+    await a.page.emulateMedia({ reducedMotion: "reduce" });
     await a.page.setViewportSize({ width: 1440, height: 1000 });
     await a.page.screenshot({
       path: `${screenshots}/redesign-workspace-1440.png`,
@@ -141,4 +143,78 @@ test("workspace search and lifecycle filters use real records; editor and review
     for (const id of ids)
       await action(a.context, "cleanupTestExperiment", { experimentId: id });
   }
+});
+
+
+test("mobile navigation opens with keyboard and follows its selected destination", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 844 });
+  await page.goto("/home");
+  const toggle = page.getByRole("button", { name: "Toggle menu" });
+  await toggle.focus();
+  await page.keyboard.press("Enter");
+  await expect(toggle).toHaveAttribute("aria-expanded", "true");
+  const example = page.locator(".app-mobile-links").getByRole("link", { name: "Example", exact: true });
+  await expect(example).toBeVisible();
+  // The mobile drawer shares the dark navigation surface; its links must remain readable.
+  const contrast = await example.evaluate(el => {
+    const luminance = (color: string) => {
+      const channels = color.match(/\d+/g)!.slice(0, 3).map(Number).map(v => {
+        const n = v / 255;
+        return n <= .04045 ? n / 12.92 : ((n + .055) / 1.055) ** 2.4;
+      });
+      return channels[0] * .2126 + channels[1] * .7152 + channels[2] * .0722;
+    };
+    const foreground = luminance(getComputedStyle(el).color);
+    const background = luminance(getComputedStyle(el.closest("nav")!).backgroundColor);
+    return (Math.max(foreground, background) + .05) / (Math.min(foreground, background) + .05);
+  });
+  expect(contrast).toBeGreaterThanOrEqual(4.5);
+  await example.click();
+  await expect(page).toHaveURL(/\/demo$/);
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+});
+
+test("editor retains messages through variant removal and rejects unsupported creatives", async ({ users }) => {
+  const [creator] = await users(1);
+  await creator.page.goto("/experiments/new");
+  await creator.page.getByLabel("Variant 1 message", { exact: true }).fill("First promise stays intact");
+  await creator.page.getByRole("button", { name: "Add variant" }).click();
+  await creator.page.getByLabel("Variant 3 message", { exact: true }).fill("Third promise moves up");
+  await creator.page.getByRole("button", { name: "Add variant" }).click();
+  await expect(creator.page.getByRole("button", { name: "Add variant" })).toBeDisabled();
+  await creator.page.getByRole("button", { name: "Remove variant 2" }).click();
+  await expect(creator.page.getByLabel("Variant 1 message", { exact: true })).toHaveValue("First promise stays intact");
+  await expect(creator.page.getByLabel("Variant 2 message", { exact: true })).toHaveValue("Third promise moves up");
+  await creator.page.getByLabel("Experiment creative").setInputFiles({ name: "invalid.txt", mimeType: "text/plain", buffer: Buffer.from("not an image") });
+  await expect(creator.page.getByRole("alert")).toContainText("Choose a PNG, JPEG, or WebP");
+  await expect(creator.page.getByRole("img", { name: "Creative attached to this experiment" })).toHaveCount(0);
+  await expect(creator.page.getByLabel("Variant 1 message", { exact: true })).toHaveValue("First promise stays intact");
+  await creator.page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await expect(creator.page).toHaveURL(/\/home$/);
+});
+
+
+test("redesigned dark surfaces keep supporting copy readable", async ({ page, users }) => {
+  const readable = async (locator: import("@playwright/test").Locator) => {
+    const ratio = await locator.evaluate(el => {
+      const luminance = (color: string) => {
+        const rgb = color.match(/\d+/g)!.slice(0, 3).map(Number).map(v => { const n = v / 255; return n <= .04045 ? n / 12.92 : ((n + .055) / 1.055) ** 2.4; });
+        return rgb[0] * .2126 + rgb[1] * .7152 + rgb[2] * .0722;
+      };
+      let surface: Element | null = el;
+      while (surface && ["rgba(0, 0, 0, 0)", "transparent"].includes(getComputedStyle(surface).backgroundColor)) surface = surface.parentElement;
+      if (!surface) throw Error("No opaque surface found");
+      const a = luminance(getComputedStyle(el).color), b = luminance(getComputedStyle(surface).backgroundColor);
+      return (Math.max(a,b)+.05)/(Math.min(a,b)+.05);
+    });
+    expect(ratio).toBeGreaterThanOrEqual(4.5);
+  };
+  await page.goto("/");
+  await readable(page.locator(".bottom-cta > div > p:last-child"));
+  const [creator] = await users(1);
+  await creator.page.goto("/experiments/new");
+  await creator.page.getByLabel("Experiment title", { exact:true }).fill("A readable draft preview");
+  await expect(creator.page.locator(".form-preview strong")).toHaveText("A readable draft preview");
+  await readable(creator.page.locator(".form-preview strong"));
+  await readable(creator.page.locator(".form-preview p").last());
 });

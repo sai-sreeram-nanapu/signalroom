@@ -58,7 +58,7 @@ export function ReviewerForm({
     }
   }
   return (
-    <section className="panel">
+    <section className="panel reviewer-panel">
       <p className="eyebrow">
         <MessageSquare size={15} aria-hidden /> SHARE YOUR POINT OF VIEW
       </p>
@@ -99,7 +99,7 @@ export function ReviewerForm({
           This experiment is closed. It is no longer accepting feedback.
         </p>
       ) : (
-        <form onSubmit={submit}>
+        <form onSubmit={submit} className="reviewer-response-form">
           <fieldset className="field">
             <legend style={{ fontWeight: 600, fontSize: 13, marginBottom: 12 }}>
               How clear is your chosen message?

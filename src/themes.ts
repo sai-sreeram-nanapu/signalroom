@@ -17,7 +17,7 @@
  */
 
 export const THEMES = [
-  { id: 'signal', label: 'Signal', description: 'A crisp research workspace with blue accents and clean white surfaces.' },
+  { id: 'signal', label: 'Signal', description: 'A research studio with navy, sky blue, and cool white surfaces.' },
   {
     id: 'slate',
     label: 'Slate',

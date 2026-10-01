@@ -1,3 +1,4 @@
+import { AnimatedNumber } from "../AnimatedNumber";
 import { BarChart3, Info } from "lucide-react";
 import { metrics, type Variant, type Feedback } from "../../lib/signalroom";
 export function ResultsPanel({
@@ -28,7 +29,7 @@ export function ResultsPanel({
       </div>
       <div className="result-stats">
         <div>
-          <strong>{feedback.length}</strong>
+          <strong><AnimatedNumber value={feedback.length} /></strong>
           <span
             data-testid="response-count"
             role="status"
@@ -40,7 +41,7 @@ export function ResultsPanel({
         </div>
         <div>
           <strong>
-            {average}
+            {feedback.length ? <AnimatedNumber value={Number(average)} decimals={1} /> : average}
             <small> / 5</small>
           </strong>
           <span>Overall clarity</span>
@@ -56,10 +57,10 @@ export function ResultsPanel({
               </span>
               {v.label.replace(/^[A-D] · /, "")}
             </strong>
-            <b>{v.share}%</b>
+            <b><AnimatedNumber value={v.share} />%</b>
           </div>
           <div className="bar-track">
-            <div className="bar-fill" style={{ width: `${v.share}%` }} />
+            <div className="bar-fill" style={{ transform: `scaleX(${v.share / 100})` }} />
           </div>
           <div className="result-meta">
             <span>

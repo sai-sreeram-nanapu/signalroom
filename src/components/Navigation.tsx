@@ -181,7 +181,7 @@ export default function Navigation() {
         </div>
 
         {mobileMenuOpen && (
-          <div className="flex flex-col border-t border-border px-2 py-2 md:hidden">
+          <div className="app-mobile-links flex flex-col border-t border-border px-2 py-2 md:hidden">
             {visibleNav.map(navLink)}
           </div>
         )}

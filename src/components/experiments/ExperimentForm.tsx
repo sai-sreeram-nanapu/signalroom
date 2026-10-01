@@ -81,7 +81,7 @@ export function ExperimentForm({
   return (
     <form onSubmit={save} className="form-grid">
       <div>
-        <section className="panel form-section">
+        <section className="panel form-section editor-details">
           <p className="eyebrow">
             <span className="form-step">1</span> EXPERIMENT DETAILS
           </p>
@@ -123,7 +123,7 @@ export function ExperimentForm({
             />
           </div>
         </section>
-        <section className="panel form-section">
+        <section className="panel form-section editor-variants">
           <div className="section-heading">
             <div>
               <p className="eyebrow">
@@ -149,6 +149,7 @@ export function ExperimentForm({
               <Plus size={14} /> Add variant
             </Button>
           </div>
+          <div className="variant-editors-grid">
           {variants.map((v, i) => (
             <div className="variant-editor" key={i}>
               <div className="section-heading">
@@ -204,6 +205,7 @@ export function ExperimentForm({
               </div>
             </div>
           ))}
+          </div>
         </section>
         <section className="panel">
           <p className="eyebrow">

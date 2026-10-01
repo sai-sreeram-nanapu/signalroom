@@ -4,7 +4,6 @@ import {
   ArrowUpRight,
   Check,
   FlaskConical,
-  MessageSquare,
   Radio,
   Sparkles,
   Users,
@@ -39,7 +38,7 @@ export default function Landing() {
           </Link>
         </header>
         <main id="main-content" className="landing-main">
-          <section className="hero">
+          <section className="hero studio-hero">
             <div className="hero-top">
               <div className="hero-copy">
                 <p className="hero-badge">
@@ -76,80 +75,20 @@ export default function Landing() {
               </div>
               <SignalSculpture />
             </div>
-            <div className="product-preview">
-              <div className="preview-toolbar">
-                <span className="preview-product">
-                  <span className="brand-icon small">
-                    <Radio size={16} aria-hidden />
-                  </span>
-                  SignalRoom <span className="toolbar-divider">/</span> Message
-                  experiments
-                </span>
-                <span className="sample-tag">Illustrative example</span>
-              </div>
-              <div className="preview-layout">
-                <aside className="preview-sidebar">
-                  <p className="eyebrow">WORKSPACE</p>
-                  <span className="preview-nav active">
-                    <FlaskConical size={17} aria-hidden /> Experiments
-                  </span>
-                  <span className="preview-nav">
-                    <MessageSquare size={17} aria-hidden /> Reviewer notes
-                  </span>
-                  <span className="preview-nav">
-                    <Sparkles size={17} aria-hidden /> AI insights
-                  </span>
-                  <div className="preview-tip">
-                    <span className="eyebrow">ONE GOOD QUESTION</span>
-                    <p>What would make your audience stop and listen?</p>
-                  </div>
-                </aside>
-                <div className="preview-content">
-                  <div className="preview-heading">
-                    <div>
-                      <span className="status published">
-                        Accepting feedback
-                      </span>
-                      <h2>One product. Two promises.</h2>
-                      <p>{demoExperiment.audience}</p>
-                    </div>
-                    <span className="preview-people">
-                      <Users size={18} aria-hidden /> 3 reviewers
-                    </span>
-                  </div>
-                  <div className="preview-body">
-                    <div className="preview-messages">
-                      <p className="eyebrow">{demoExperiment.question}</p>
-                      {demoExperiment.variants.map((v, i) => (
-                        <div
-                          className={`preview-message variant-tone-${i}`}
-                          key={v.id}
-                        >
-                          <span className="variant-letter">
-                            {String.fromCharCode(65 + i)}
-                          </span>
-                          <div>
-                            <span className="caption">
-                              {v.label.replace(/^[A-D] · /, "")}
-                            </span>
-                            <p>{v.copy}</p>
-                          </div>
-                        </div>
-                      ))}
-                      <p className="preview-note">
-                        <MessageSquare size={15} aria-hidden /> “The deadline
-                        makes the outcome feel tangible.”
-                        <span>Illustrative reviewer note</span>
-                      </p>
-                    </div>
-                    <ResultsPanel
-                      variants={demoExperiment.variants}
-                      feedback={demoFeedback}
-                    />
-                  </div>
-                </div>
+
+          </section>
+          <section className="product-story" aria-label="Illustrative experiment">
+            <div className="story-copy">
+              <p className="eyebrow">FROM REACTION TO DIRECTION</p>
+              <h2>A decision you can explain.</h2>
+              <p>See which message people choose, understand why, and decide what to test next. The feedback stays connected to the question.</p>
+              <Link className="text-link" to="/demo">Try this comparison <ArrowUpRight size={17} aria-hidden /></Link>
+              <div className="story-messages">
+                <span className="sample-tag">Illustrative example · 3 invented responses</span>
+                {demoExperiment.variants.map((variant, i) => <div className={`story-message variant-tone-${i}`} key={variant.id}><span className="variant-letter">{String.fromCharCode(65+i)}</span><div><p className="caption">{variant.label.replace(/^[A-D] · /, "")}</p><p>{variant.copy}</p></div></div>)}
               </div>
             </div>
+            <ResultsPanel variants={demoExperiment.variants} feedback={demoFeedback} />
           </section>
           <section id="how-it-works" className="method">
             <div className="section-intro">
